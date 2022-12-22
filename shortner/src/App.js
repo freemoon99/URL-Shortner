@@ -8,8 +8,12 @@ function App() {
   const [list, setList] = useState([]);
   const [click, setClick] = useState('');
   const [shortenUrl, setShortenUrl] = useState([]);
+  const [getErr, SerGetErr] = useState();
+  const [prevUrl, setPrevUrl] = useState();
+  const base = `http://localhost:3000`;
+  
   useEffect(()=>{
-    axios.get('http://localhost:5000/getUrls')
+    axios.get('http://localhost:3000/getUrls')
     .then((res)=>{
       if(res.data){
         setList(res.data);
@@ -34,22 +38,28 @@ function App() {
       alert('URL이 잘못되었습니다.')
       return;
     }
-    axios.post('http://localhost:5000/inputUrl', urlLink)
+
+    axios.post('http://localhost:3000/inputUrl', urlLink)
     .then((res) => {
-      setShortenUrl(res.data.shortUrl)
+      setShortenUrl(res.data.shortUrl);
     })
-    .catch((err)=>{console.log(err)})
-    
+    .catch((err)=>{
+      alert(err.response.data.message)
+      SerGetErr(err.response.data.status);
+      setPrevUrl(err.response.data.prevUrl);
+    })
   }
-  
+  const isErr = (ele) => {
+    if(ele === '400') return true;
+  }
 
   return (
     <div className='allSec'>
       <h1>Create Short URL</h1>
       <label>Input Link</label>
-      <input type='text' id='inputUrl' placeholder='input url link' onChange={onChangeLink}/>
+      <input type='text' name='fullUrl' placeholder='input url link' onChange={onChangeLink}/>
       <button onClick={onClickbtn}>단축하기</button>
-      <div>생성된 주소: <a href={`${shortenUrl}`}>{shortenUrl}</a></div>
+      <div>생성된 주소: <a href={`${shortenUrl}`}>{isErr(getErr)?prevUrl:shortenUrl}</a></div>
       <h2>Shorten List</h2>
       <table>
         <thead>
@@ -62,7 +72,7 @@ function App() {
           {list.map((ele, idx)=>(
             <tr key={idx}>
               <td><a href={ele.fullUrl}>{ele.fullUrl}</a></td>
-              <td><a href={ele.shortUrl}>{ele.shortUrl}</a></td>
+              <td><a href={base+'/'+ele.shortUrl}>{base+'/'+ele.shortUrl}</a></td>
             </tr>
           ))}
         </tbody>

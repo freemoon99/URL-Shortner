@@ -3,12 +3,12 @@ const mysql = require('mysql');
 const app = express();
 const path = require('path');
 const bodyParser = require("body-parser");
+const cors = require('cors');
 require('dotenv').config();
-const port = 5000;
+const port = 3000;
 
 app.use(express.static(path.join(__dirname, '/shortner/build')));
 app.use(express.json());
-var cors = require('cors');
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -28,8 +28,8 @@ db.connect((err) => {
   console.log('db 연결 성공');
 })
 
-//링크 가져오기
-const getLinks = (req,res) =>{
+//get method : 메인페이지 랜더링시
+app.get('/', (req, res) => {
   let sql = `SELECT * FROM url`;
   db.query(sql, (err, result) => {
     if(err){
@@ -39,15 +39,25 @@ const getLinks = (req,res) =>{
       res.sendFile(path.join(__dirname, '/shortner/build/index.html'));
     }
   })
-}
-//get method : 메인페이지 랜더링시
-app.get('/', (req, res) => {
-  getLinks(req, res);
 });
+
+app.get('/getUrls',(req,res)=>{
+  let sql = `SELECT * FROM url`;
+  db.query(sql, (err, result)=>{
+    if(err){
+      res.status(404).json({
+        status:'404',
+        message:'ERROR: 서버에 문제가 있습니다.'
+      });
+    } else {
+      res.status(200).json(result);
+    }
+  })
+})
 
 //post method
 app.post('/inputUrl', (req, res) => {
-  const basic = `http://localhost:3000`;
+  const base = `http://localhost:3000`;
   const fullUrl = req.body.fullUrl;
   let shorten = Math.random().toString(36).replace(/[^a-z0-9]/gi,'').substring(2,10);
   let findSql = `SELECT * FROM url WHERE fullUrl = ?`
@@ -58,7 +68,6 @@ app.post('/inputUrl', (req, res) => {
       message:'ERROR: 데이터가 입력되지 않았습니다.'
     });
   }
-  
   db.query(findSql,[fullUrl],(err,results)=>{
     if(err){
       console.log(err);
@@ -76,27 +85,28 @@ app.post('/inputUrl', (req, res) => {
     } else {
       res.status(400).json({
         status:'400',
-        message:'ERROR: 이미 중복된 값이 들어있습니다.'
+        message:'ERROR: 이미 중복된 값이 들어있습니다.',
+        prevUrl:`${base}/${results[0].shortUrl}`,
       });
     }
   })
 })
 
-// // get method : 주소 리다이렉트
-// app.get('/:shortUrl',(req,res)=>{
-//   let shortID = req.params.ID;
-//   let sql = `SELECT * FROM url WHERE `;
-//   db.query(sql, (err, result)=>{
-//     if(err){
-//       res.status(500).json({
-//         status:'notok',
-//         message:'ERROR2'
-//       });
-//     } else {
-//       res.status(200).json(result);
-//     }
-//   })
-// })
+// get method : 주소 리다이렉트
+app.get('/:shortUrl',(req,res)=>{
+
+  let findSql = `SELECT * FROM url WHERE shortUrl = ?`
+  db.query(findSql,[req.params.shortUrl],(err, result)=>{
+    if(err){
+      res.status(404).json({
+        status:'404',
+        message:'ERROR: 서버에 문제가 있습니다.'
+      });
+    } else {
+      res.redirect(result[0].fullUrl)
+    }
+  })
+})
 
 app.listen(port, ()=> {
   console.log(`서버가 실행됩니다. http://localhost:${port}`);
