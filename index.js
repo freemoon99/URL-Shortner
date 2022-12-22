@@ -59,7 +59,7 @@ app.get('/getUrls',(req,res)=>{
 app.post('/inputUrl', (req, res) => {
   const base = `http://localhost:3000`;
   const fullUrl = req.body.fullUrl;
-  let shorten = Math.random().toString(36).replace(/[^a-z0-9]/gi,'').substring(2,10);
+  let shorten = Math.random().toString(36).replace(/[^a-z0-9]/gi,'').substring(2, 9);
   let findSql = `SELECT * FROM url WHERE fullUrl = ?`
   let sql = `INSERT INTO url(fullUrl, shortUrl) VALUES('${fullUrl}','${shorten}')`
   if(!fullUrl){
