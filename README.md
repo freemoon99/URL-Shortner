@@ -25,11 +25,7 @@
 
 ## 구현
 
-추가 예정
- 
-## 작동 화면
-
-추가 예정
+![화면 캡처](https://user-images.githubusercontent.com/102667851/209246809-baed3b7e-323e-4a4f-8dbe-9622066d7c44.png)
 
 ## 프로젝트 진행 중 이슈
 
