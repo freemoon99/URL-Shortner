@@ -7,7 +7,7 @@ const cors = require('cors');
 require('dotenv').config();
 const port = 3000;
 
-app.use(express.static(path.join(__dirname, '/shortner/build')));
+app.use(express.static(path.join(__dirname, '../frontend/build')));
 app.use(express.json());
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -36,7 +36,7 @@ app.get('/', (req, res) => {
       console.log(err);
     } else {
       console.log(result)
-      res.sendFile(path.join(__dirname, '/shortner/build/index.html'));
+      res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
     }
   })
 });
@@ -57,7 +57,6 @@ app.get('/getUrls',(req,res)=>{
 
 //post method
 app.post('/inputUrl', (req, res) => {
-  const base = `http://localhost:3000`;
   const fullUrl = req.body.fullUrl;
   let shorten = Math.random().toString(36).replace(/[^a-z0-9]/gi,'').substring(2, 9);
   let findSql = `SELECT * FROM url WHERE fullUrl = ?`
@@ -86,7 +85,7 @@ app.post('/inputUrl', (req, res) => {
       res.status(400).json({
         status:'400',
         message:'ERROR: 이미 중복된 값이 들어있습니다.',
-        prevUrl:`${base}/${results[0].shortUrl}`,
+        prevUrl:`${process.env.PROXY}/${results[0].shortUrl}`,
       });
     }
   })

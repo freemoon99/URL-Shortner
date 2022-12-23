@@ -1,0 +1,55 @@
+
+h2{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.urltext{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: large;
+  font-weight: bolder;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.table{
+  width: 100%;
+  border: 2px solid black;
+  margin: 0 auto;
+}
+
+.th{
+  text-align: center;
+}
+
+.allsec{
+  padding-top: 10%;
+  height: 98vh;
+  margin: 0 auto;
+}
+
+a, a:link, a:visited{
+  text-decoration: none;
+  color: black;
+  cursor: pointer;
+}
+
+a:hover, a:active{
+  text-decoration: none;
+  color: pink;
+  cursor: pointer;
+}
+
+.footer{
+  background-color: black;
+  color: white;
+  width: 85%;
+  margin: 0 auto;
+  margin-top: 5%;
+  text-align: center;
+}

@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import './App.css';
 import axios from 'axios';
 
-
 function App() {
   const [urlLink, setUrlLink] = useState('');
   const [list, setList] = useState([]);
@@ -10,10 +9,9 @@ function App() {
   const [shortenUrl, setShortenUrl] = useState([]);
   const [getErr, SerGetErr] = useState();
   const [prevUrl, setPrevUrl] = useState();
-  const base = `http://localhost:3000`;
   
   useEffect(()=>{
-    axios.get('http://localhost:3000/getUrls')
+    axios.get(`/getUrls`)
     .then((res)=>{
       if(res.data){
         setList(res.data);
@@ -39,7 +37,7 @@ function App() {
       return;
     }
 
-    axios.post('http://localhost:3000/inputUrl', urlLink)
+    axios.post(`/inputUrl`, urlLink)
     .then((res) => {
       setShortenUrl(res.data.shortUrl);
     })
@@ -48,35 +46,43 @@ function App() {
       SerGetErr(err.response.data.status);
       setPrevUrl(err.response.data.prevUrl);
     })
-  }
+  } 
   const isErr = (ele) => {
     if(ele === '400') return true;
   }
 
   return (
-    <div className='allSec'>
-      <h1>Create Short URL</h1>
-      <label>Input Link</label>
-      <input type='text' name='fullUrl' placeholder='input url link' onChange={onChangeLink}/>
-      <button onClick={onClickbtn}>단축하기</button>
-      <div>생성된 주소: <a href={`${shortenUrl}`}>{isErr(getErr)?prevUrl:shortenUrl}</a></div>
-      <h2>Shorten List</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>fullUrl</th>
-            <th>shortUrl</th>
-          </tr>
-        </thead>
-        <tbody>
-          {list.map((ele, idx)=>(
-            <tr key={idx}>
-              <td><a href={ele.fullUrl}>{ele.fullUrl}</a></td>
-              <td><a href={base+'/'+ele.shortUrl}>{base+'/'+ele.shortUrl}</a></td>
+    <div className='allsec'>
+      <div className='container'>
+        <h2>Create Short URL</h2>
+        <form>
+          <div className='form-group'>
+            <input type='url' placeholder="Input URL Link" className='form-control' onChange={onChangeLink}/>
+          </div>
+          <div className='form-group'>
+            <button className='form-control' onClick={onClickbtn}>단축하기</button>
+          </div>
+        </form>
+        <div className='urltext'>생성된 주소: <a href={`${shortenUrl}`}>{isErr(getErr)?prevUrl:shortenUrl}</a></div>
+        <h2>Shorten List</h2>
+        <table className='table'>
+          <thead>
+            <tr>
+              <th className='th'>fullUrl</th>
+              <th className='th'>shortUrl</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {list.map((ele, idx)=>(
+              <tr key={idx}>
+                <td className='th'><a href={ele.fullUrl}>{ele.fullUrl}</a></td>
+                <td className='th'><a href={process.env.PROXY+'/'+ele.shortUrl}>{process.env.PROXY+'/'+ele.shortUrl}</a></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className='footer'>Copyright freemoon99 All rights reserved.<br/>contact @freemoon99</div>
     </div>
   );
 }
