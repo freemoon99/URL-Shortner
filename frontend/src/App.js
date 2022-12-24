@@ -42,11 +42,12 @@ function App() {
       setShortenUrl(res.data.shortUrl);
     })
     .catch((err)=>{
-      alert(err.response.data.message)
+      alert(err.response.data.message);
       SerGetErr(err.response.data.status);
       setPrevUrl(err.response.data.prevUrl);
     })
   } 
+
   const isErr = (ele) => {
     if(ele === '400') return true;
   }
@@ -75,8 +76,8 @@ function App() {
           <tbody>
             {list.map((ele, idx)=>(
               <tr key={idx}>
-                <td className='th'><a href={ele.fullUrl}>{ele.fullUrl}</a></td>
-                <td className='th'><a href={process.env.PROXY+'/'+ele.shortUrl}>{process.env.PROXY+'/'+ele.shortUrl}</a></td>
+                <td className='th' name='fullname'><a href={ele.fullUrl}>{ele.fullUrl}</a></td>
+                <td className='th'><a href={process.env.PROXY+'/'+ele.shortUrl}>{process.env.PROXY+'/'+ele.shortUrl}</a><button className='xbtn' onClick={()=>{axios.post('/deleteUrl', ele.fullUrl).then((res)=>{alert('성공')}).catch((err)=>{alert('실패')})}}>❌</button></td>
               </tr>
             ))}
           </tbody>

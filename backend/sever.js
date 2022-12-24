@@ -93,7 +93,6 @@ app.post('/inputUrl', (req, res) => {
 
 // get method : 주소 리다이렉트
 app.get('/:shortUrl',(req,res)=>{
-
   let findSql = `SELECT * FROM url WHERE shortUrl = ?`
   db.query(findSql,[req.params.shortUrl],(err, result)=>{
     if(err){
@@ -103,6 +102,22 @@ app.get('/:shortUrl',(req,res)=>{
       });
     } else {
       res.redirect(result[0].fullUrl)
+    }
+  })
+})
+
+// post method : 삭제
+app.post('/deleteUrl',(req,res)=>{
+  let name = Object.keys(req.body);
+  let delSql = `DELETE FROM url WHERE fullUrl = ?`
+  db.query(delSql,[name],(err, result)=>{
+    if(err){
+      res.status(404).json({
+        status:'404',
+        message:'ERROR: 잘못된 접근입니다'
+      });
+    } else {
+      res.sendStatus(200);
     }
   })
 })

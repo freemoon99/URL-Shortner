@@ -53,3 +53,9 @@ a:hover, a:active{
   margin-top: 5%;
   text-align: center;
 }
+
+.xbtn{
+  border: 0;
+  background-color: white;
+  margin-left: 1%;
+}
