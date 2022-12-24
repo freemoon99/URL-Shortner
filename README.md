@@ -108,6 +108,22 @@ app.get('/:shortUrl',(req,res)=>{
   })
 })
 
+// post method : 삭제
+app.post('/deleteUrl',(req,res)=>{
+  let name = Object.keys(req.body);
+  let delSql = `DELETE FROM url WHERE fullUrl = ?`
+  db.query(delSql,[name],(err, result)=>{
+    if(err){
+      res.status(404).json({
+        status:'404',
+        message:'ERROR: 잘못된 접근입니다'
+      });
+    } else {
+      res.sendStatus(200);
+    }
+  })
+})
+
 ```
 
 ## 프로젝트 진행 중 이슈
